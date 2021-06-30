@@ -103,7 +103,7 @@
       let select=document.querySelector("select");
       let movies=document.querySelectorAll(".movies");
       select.addEventListener("change",function(event){
-          let selectedOption=event.target.value;
+          let selectedOption=select.value;
         for(let i=0;i<movies.length;i++){
             let p=movies[i].querySelector("p");
             let dataCategory=p.getAttribute("data-category");

@@ -715,11 +715,13 @@
             elmnt.scrollIntoView();
           }
           else if(e.key=="b"){
-            var scrollingElement = document.body;
-            scrollingElement.scrollTop = scrollingElement.scrollHeight;
+            // var scrollingElement = document.body;
+            // scrollingElement.scrollTop = scrollingElement.scrollHeight;
+            document.body.scrollIntoView(false);
           }
           else if(e.key=="t"){
             document.body.scrollIntoView();
+            // getBoundingClientRect
           }
           
       })

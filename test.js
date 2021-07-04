@@ -1,18 +1,37 @@
-// const DEVICE_ID_GROUP = {
-//     10000:'bulb',
-//     20000:'plug',
-//     30000:'acRemote',
-//     31000:'tvRemote',
-//     0:'others'
-// }
 
-// const DEVICE_USAGE_TYPE = {
-//     10000: ['toggle', 'quickAction', 'colorChange', 'modeChange', 'scheduler'],
-//     20000: ['toggle', 'quickAction', 'scheduler'],
-//     30000: ['toggle', 'quickAction', 'scheduler'],
-//     31000: ['toggle', 'quickAction', 'scheduler', 'tempChange'],
-//     0: ['genericAction']
-// };
+let dataSet;
+const fs=require('fs');
+fs.readFile("./analysis.json" ,function(err,data){
+    if(err) throw err;
+    else{
+        let treatedObj=data.toString().trim();
+        // console.log((treatedObj));
+        // console.log(treatedObj.length);
+        let regex=/}\n{/gi;
+       let dataSet= treatedObj.replace(regex,"},{");
+        
+        dataSet=JSON.parse(dataSet);
+        // console.log((dataSet));
+        // let ans=malformedJSON2Array(dataSet)
+            // console.log(ans);
+
+        let analysedObj=getAnalysedObj(dataSet);
+        console.log("analysed Obj created");
+        // console.log(analysedObj);
+    }
+});
+
+function malformedJSON2Array (tar) {
+    var arr = [];
+    tar = tar.replace(/^\{|\}$/g,'').split('},{');
+    for(var i=0,cur,pair;cur=tar[i];i++){
+        arr[i] = {};
+        pair = cur.split(':');
+        arr[i][pair[0]] = /^\d*$/.test(pair[1]) ? +pair[1] : pair[1];
+    }
+    return arr;
+}
+
 
 let deviceID_group = {
     '404': 'bulb_toggle',
@@ -57,79 +76,57 @@ function getDate(epochTime) {
 // console.log(getDate(1625030267705007));
 
 
-const dataSet = [
-    {
-        "user_id": "+917042516397",
-        "action": "303",
-        "action_type": "selecting_month_em_screen",
-        "event_timestamp": "1625030267705007"
-    },
-    {
-        "user_id": "+917042516397",
-        "action": "303",
-        "action_type": "selecting_month_em_screen",
-        "event_timestamp": "1625030271264009"
-    },
-    {
-        "user_id": "+917042516397",
-        "action": "303",
-        "action_type": "selecting_month_em_screen",
-        "event_timestamp": "1625030271974010"
-    },
-    {
-        "user_id": "+917042516397",
-        "action": "303",
-        "action_type": "selecting_month_em_screen",
-        "event_timestamp": "1625030267393006"
-    }
-]
+
 let result = [];
 
 
 let last_user_id = -1;
 let last_timestamp = -1;
 
+function getAnalysedObj(dataSet){
+    for (let i = 0; i < dataSet.length; i++) {
 
-for (let i = 0; i < dataSet.length; i++) {
-
-    let curr_user_id = dataSet[i].user_id;
-    let curr_timestamp = getDate(dataSet[i].event_timestamp);
-    let curr_action_type = deviceID_group[dataSet[i].action];
+        let curr_user_id = dataSet[i].user_id;
+        let curr_timestamp = getDate(dataSet[i].event_timestamp);
+        let curr_action_type = deviceID_group[dataSet[i].action];
 
 
-    if (last_user_id == curr_user_id) {
-        if (last_timestamp == curr_timestamp) {
+        if (last_user_id == curr_user_id) {
+            if (last_timestamp == curr_timestamp) {
 
-            //if action_type exists increase count
-            if (result[last_user_id][last_timestamp][curr_action_type] !== undefined) {
-                result[last_user_id][last_timestamp][curr_action_type] += 1;
+                //if action_type exists increase count
+                if (result[last_user_id][last_timestamp][curr_action_type] !== undefined) {
+                    result[last_user_id][last_timestamp][curr_action_type] += 1;
+                }
+                else {
+                    result[last_user_id][last_timestamp][curr_action_type] = 0;
+                }
             }
             else {
-                result[last_user_id][last_timestamp][curr_action_type] = 0;
+                result[last_user_id][curr_timestamp] = {};
+
+                //new action_type is added
+                result[last_user_id][curr_timestamp][curr_action_type] = 0;
             }
         }
         else {
-            result[last_user_id][curr_timestamp] = {};
-
-            //new action_type is added
-            result[last_user_id][curr_timestamp][curr_action_type] = 0;
+            // if new user_id then create it's object 
+            result[curr_user_id] = {};
+            result[curr_user_id][curr_timestamp] = {};
+            result[curr_user_id][curr_timestamp][curr_action_type] = 0;
         }
-    }
-    else {
-        // if new user_id then create it's object 
-        result[curr_user_id] = {};
-        result[curr_user_id][curr_timestamp] = {};
-        result[curr_user_id][curr_timestamp][curr_action_type] = 0;
-    }
 
 
-    last_user_id = curr_user_id;
-    last_timestamp = curr_timestamp;
+        last_user_id = curr_user_id;
+        last_timestamp = curr_timestamp;
+    }
+
+    return result;
 }
 
 
 
-console.log(res);
+// console.log(res);
 
 
 

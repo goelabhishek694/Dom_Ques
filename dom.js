@@ -73,11 +73,27 @@ searchBook.addEventListener("keyup",function(e){
 
 //tabbed content
 
-let tabs=document.querySelector(".tabs li");
-for(let i=0;i<tabs.length;i++){
-    tabs[i].addEventListener("click",function(e){
-        let dataTarget=tabs[i].getAttribute("data-target");
-        let dataTab=document.querySelector(dataTarget);
-        
-    })
-}
+let tabs=document.querySelector(".tabs");
+let panels=document.querySelectorAll(".panel");
+console.log(panels);
+tabs.addEventListener("click",function(e){
+    // console.log(e.target.tagName);
+    if(e.target.tagName=="LI"){
+        console.log("clicked");
+        let currTab=e.target;
+        // let allTabs=tabs.querySelectorAll("li");
+        // allTabs.forEach((tab)=>{
+        //     tab.classList.remove("active");
+        //     tab.style.display=""
+        // })
+        // currTab.classList.add("active");
+        panels.forEach(panel=>{
+            panel.classList.remove("active");
+        })
+        let id=currTab.getAttribute("data-target");
+        console.log(id);
+        let currPanel=document.querySelector(id);
+        currPanel.classList.add("active");
+    }
+});
+

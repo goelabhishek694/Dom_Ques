@@ -1,3 +1,14 @@
+// +917895895005 : {
+// 	20210601:{
+// 	bulb_toggle: 4,
+// 	EM_other: 5
+	
+// },
+// 20210607:{
+// 	bulb_quickAction:3
+// }
+// },
+
 
 let dataSet;
 const fs=require('fs');

@@ -53,3 +53,31 @@ deleteBtn.textContent="delete";
 
 });
 
+// serch bar 
+const searchBook=document.forms["search-books"].querySelector('input');
+searchBook.addEventListener("keyup",function(e){
+    let val=e.target.value.toLowerCase();
+    const books=ul.getElementsByTagName('li');
+    // console.log(books);
+    for(let i=0;i<books.length;i++){
+        const title=books[i].querySelector('.name').textContent.toLowerCase();
+        if(title.includes(val)){
+            books[i].style.display="block";
+        }
+        else{
+            books[i].style.display="none";
+        }
+    }
+
+});
+
+//tabbed content
+
+let tabs=document.querySelector(".tabs li");
+for(let i=0;i<tabs.length;i++){
+    tabs[i].addEventListener("click",function(e){
+        let dataTarget=tabs[i].getAttribute("data-target");
+        let dataTab=document.querySelector(dataTarget);
+        
+    })
+}
